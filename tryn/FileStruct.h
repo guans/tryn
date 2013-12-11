@@ -191,6 +191,17 @@ long Pnt_FCT(CFile &PntFile,CString FilePathName)
 	pnt_stru pnt;
 	if(!GPntTmpFOpened)						//如果点临时文件没有打开则新建
 		NewPnt();
+
+	int pversion;
+	int pnum;
+	int plnum;
+	GPntTmpFile.Read(&pversion,sizeof(int));			
+	GPntTmpFile.Read(&pnum,sizeof(int));			
+	GPntTmpFile.Read(&plnum,sizeof(int));			
+	GPntNum+=pnum;
+	GPntLNum+=plnum;								//存储线个数
+
+
 	GPntTmpFile.Seek(0,CFile::begin);		//将点临时文件指针定义到开始
 	PntFile.Seek(Off,CFile::begin);			//点永久文件指针跳过版本及物理数逻辑数
 	int GPntNum=( PntFile.GetLength()-Off)/sizeof(PNT_STRU);
@@ -247,7 +258,7 @@ long Lin_FCT(CFile &LinFile,CString FilePathName)
 	int linversion=0;
 	int linnum=0;
 	int linlnum=0;
-
+	GLinChanged=1;  //线临时文件改变
 
 	if(!GLinTmpFOpened)
 		NewLin();
@@ -255,8 +266,9 @@ long Lin_FCT(CFile &LinFile,CString FilePathName)
 	LinFile.Read(&linversion,sizeof(int));			
 	LinFile.Read(&linnum,sizeof(int));			
 	LinFile.Read(&linlnum,sizeof(int));			
-	GPntNum+=linnum;
-	GPntLNum+=linnum;
+	GLinNum+=linnum;
+	GLinLNum+=linnum;								//存储线个数
+
 	GLinTmpFile1.Seek(0,CFile::begin);				//将线临时文件1指针定义到开始
 	tmpDatOff=0;
 	GLinTmpFile2.Seek(tmpDatOff,CFile::begin);		//将线临时文件2指针定义到tmpdatoff
@@ -313,7 +325,7 @@ long Lin_TCF(CString FilePathName,int version)
 		int lindata=0;
 		lin_ndx_stru linNdx;
 		lin_ndx_stru tempNdx;
-
+		int temp=i;
 		GLinTmpFile1.Read(&linNdx,sizeof(LIN_NDX_STRU));	
 		tempNdx=linNdx;
 
@@ -332,6 +344,7 @@ long Lin_TCF(CString FilePathName,int version)
 
 		dataOff+=lindata;
 		delete []linDatBuf;
+		i=temp;
 
 
 	}

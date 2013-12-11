@@ -67,8 +67,8 @@ IMPLEMENT_DYNCREATE(CtrynView, CView)
 		// TODO: 在此处添加构造代码
 		isLeftBDown=0;
 		linePnt=0;
-		GLinNum=0;
-		GLinLNum=0;
+		//GLinNum=0;
+		//GLinLNum=0;
 
 		MakingLine=0;
 
