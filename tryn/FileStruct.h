@@ -321,10 +321,10 @@ long Lin_TCF(CString FilePathName,int version)
 		linDatBuf=new char [linDatSize];					//申请存放当前线坐标数据所需内存
 		GLinTmpFile2.Seek(linNdx.datOff,CFile::begin);		//定位到索引的坐标数据
 		lindata=linDatSize;
-		GLinTmpFile2.Read(&linDatBuf,sizeof(lindata));
+		GLinTmpFile2.Read(&linDatBuf,lindata);
 		GLinFile.Seek(dataOff,CFile::begin);
 		//lindata=linDatSize;
-		GLinFile.Write(&linDatBuf,sizeof(lindata));
+		GLinFile.Write(&linDatBuf,lindata);
 		tempNdx.datOff=dataOff;
 		GLinFile.Seek(ndxOff,CFile::begin);
 		GLinFile.Write(&tempNdx,sizeof(LIN_NDX_STRU));
