@@ -86,17 +86,17 @@ struct pnt_stru
 
 struct pnt_version
 {
-		char 	flag[3];	//标志符‘PNT’
-		int		version;	//10
+	char 	flag[3];	//标志符‘PNT’
+	int		version;	//10
 }PNT_VERSION;
 
 struct lin_ndx_stru
 {
-		char				isDel;		//是否被删除？
-		COLORREF			color;		//线颜色
-		int				pattern;		//线型（号）
-		long 				dotNum;		//线坐标点数
-		long				datOff;		//线坐标数据存储位置  
+	char				isDel;		//是否被删除？
+	COLORREF			color;		//线颜色
+	int				pattern;		//线型（号）
+	long 				dotNum;		//线坐标点数
+	long				datOff;		//线坐标数据存储位置  
 }LIN_NDX_STRU,TEM_LIN;
 
 struct lin_version
@@ -107,10 +107,10 @@ struct lin_version
 
 struct reg_ndx_stru
 {
-		char				isDel;		//是否被删除？
-		COLORREF			color;		//区颜色
-		long 				dotNum;		//区坐标点数
-		long				datOff;		//区坐标数据存储位置  
+	char				isDel;		//是否被删除？
+	COLORREF			color;		//区颜色
+	long 				dotNum;		//区坐标点数
+	long				datOff;		//区坐标数据存储位置  
 }REG_NDX_STRU;
 
 struct reg_version
@@ -149,8 +149,8 @@ long NewPnt()
 	else
 
 		GPntFCreated = 1;
-		GPntTmpFile.Open (_T("E:\\编程\\关于编书\\MapEditor\\tempfile\\GPntTmpFile.pnt"),CFile:: modeCreate|CFile:: modeReadWrite);
-		GPntTmpFOpened = 1;
+	GPntTmpFile.Open (_T("E:\\编程\\关于编书\\MapEditor\\tempfile\\GPntTmpFile.pnt"),CFile:: modeCreate|CFile:: modeReadWrite);
+	GPntTmpFOpened = 1;
 	return (1);
 }
 long NewLin()
@@ -163,9 +163,9 @@ long NewLin()
 	else
 
 		GLinFCreated = 1;
-		GLinTmpFile1.Open (_T("E:\\编程\\关于编书\\MapEditor\\tempfile\\GLinTmpFFile1.lin"),CFile:: modeCreate|CFile:: modeReadWrite);
-		GLinTmpFile2.Open (_T("E:\\编程\\关于编书\\MapEditor\\tempfile\\GLinTmpFFile2.lin"),CFile:: modeCreate|CFile:: modeReadWrite);
-		GLinTmpFOpened = 1;
+	GLinTmpFile1.Open (_T("E:\\编程\\关于编书\\MapEditor\\tempfile\\GLinTmpFFile1.lin"),CFile:: modeCreate|CFile:: modeReadWrite);
+	GLinTmpFile2.Open (_T("E:\\编程\\关于编书\\MapEditor\\tempfile\\GLinTmpFFile2.lin"),CFile:: modeCreate|CFile:: modeReadWrite);
+	GLinTmpFOpened = 1;
 	return (1);
 }
 long NewReg()
@@ -178,9 +178,9 @@ long NewReg()
 	else
 
 		GRegFCreated = 1;
-		GRegTmpFile1.Open (_T("E:\\编程\\关于编书\\MapEditor\\tempfile\\GRegTmpFile1.regn"),CFile:: modeCreate|CFile::modeReadWrite);
-		GRegTmpFile2.Open (_T("E:\\编程\\关于编书\\MapEditor\\tempfile\\GRegTmpFile2.regn"),CFile:: modeCreate|CFile::modeReadWrite);
-		GRegTmpFOpened = 1;
+	GRegTmpFile1.Open (_T("E:\\编程\\关于编书\\MapEditor\\tempfile\\GRegTmpFile1.regn"),CFile:: modeCreate|CFile::modeReadWrite);
+	GRegTmpFile2.Open (_T("E:\\编程\\关于编书\\MapEditor\\tempfile\\GRegTmpFile2.regn"),CFile:: modeCreate|CFile::modeReadWrite);
+	GRegTmpFOpened = 1;
 	return (1);
 }
 //将点永久文件转化成点临时文件的函数
@@ -199,7 +199,7 @@ long Pnt_FCT(CFile &PntFile,CString FilePathName)
 		PntFile.Read(&pnt,sizeof(PNT_STRU));
 		GPntTmpFile.Write(&pnt,sizeof(PNT_STRU));
 	}
-	
+
 	return (1);
 }
 //将点临时文件转化成永久文件的函数
@@ -214,7 +214,7 @@ long Pnt_TCF(CString FilePathName,int version)
 	GPntTmpFile.Seek(0,CFile::begin);
 	GPntFile.Open(FilePathName,CFile:: modeCreate|CFile:: modeWrite|CFile::modeRead);
 	GPntFile.Seek(0,CFile::begin);
-	
+
 	flag[0] = 'P';
 	flag[1] = 'N';
 	flag[2] = 'T';
@@ -223,12 +223,12 @@ long Pnt_TCF(CString FilePathName,int version)
 	GPntFile.Write (&GPntNum,sizeof(int));
 	GPntFile.Write (&GPntLNum,sizeof(int));
 	for(int i=0;i<len/sizeof(PNT_STRU);i++)
-		{
-			GPntTmpFile.Read(&TEM_PNT,sizeof(TEM_PNT));
-			PNT_STRU=TEM_PNT;
-			GPntFile.Write(&PNT_STRU,sizeof(PNT_STRU));
+	{
+		GPntTmpFile.Read(&TEM_PNT,sizeof(TEM_PNT));
+		PNT_STRU=TEM_PNT;
+		GPntFile.Write(&PNT_STRU,sizeof(PNT_STRU));
 
-		}
+	}
 	GPntFile.Close();
 	GPntChanged=0;
 	return (1);
@@ -239,41 +239,56 @@ long Lin_FCT(CFile &LinFile,CString FilePathName)
 {
 	int i;
 	int ndxOff=sizeof(LIN_VERSION)+sizeof(GLinNum)+sizeof(GLinLNum);
+	//sizeof(LIN_VERSION)+sizeof(GLinNum)+sizeof(GLinLNum)+3;
 	int tmpDatOff;
 	lin_ndx_stru linNdx;
 	int linDatSize;
 	char *linDatBuf;
-	int len=0;
+	int linversion=0;
+	int linnum=0;
+	int linlnum=0;
+
+
 	if(!GLinTmpFOpened)
 		NewLin();
-	GLinTmpFile1.Seek(0,CFile::begin);		//将线临时文件1指针定义到开始
+
+	LinFile.Read(&linversion,sizeof(int));			
+	LinFile.Read(&linnum,sizeof(int));			
+	LinFile.Read(&linlnum,sizeof(int));			
+	GPntNum+=linnum;
+	GPntLNum+=linnum;
+	GLinTmpFile1.Seek(0,CFile::begin);				//将线临时文件1指针定义到开始
 	tmpDatOff=0;
 	GLinTmpFile2.Seek(tmpDatOff,CFile::begin);		//将线临时文件2指针定义到tmpdatoff
-	LinFile.Seek(ndxOff,CFile::begin);		//将线永久文件指针跳过版本及逻辑数物理数
-	len=LinFile.GetLength()-ndxOff;
-	for(i=0;i<len/sizeof(LIN_NDX_STRU);i++)					
-		{
-			LinFile.Read(&linNdx,sizeof(LIN_NDX_STRU));			//读第i条线的索引
-			ndxOff+=sizeof(LIN_NDX_STRU);
-			linDatSize=linNdx.dotNum*sizeof(POINT);				//计算当前线的坐标点所需内存字节数
-			linDatBuf=new char [linDatSize];					//申请存放当前线坐标数据所需内存
-			LinFile.Seek(linNdx.datOff,CFile::begin);			//定位到当前线坐标数据起始位置
-			LinFile.Read(linDatBuf,linDatSize);					//读当前线的坐标数据
-			GLinTmpFile2.Write(linDatBuf,linDatSize);			//将线坐标数据存入临时文件2
-			linNdx.datOff=tmpDatOff;
-			tmpDatOff+=linDatSize;
-			GLinTmpFile1.Write(&linNdx,sizeof(LIN_NDX_STRU)); //将新索引结构存于临时文件1
-			LinFile.Seek(ndxOff,CFile::begin);					//重新定位到索引结构处
+	LinFile.Seek(ndxOff,CFile::begin);				//将线永久文件指针跳过版本及逻辑数物理数
 
-		}
-	
+
+	for(i=0;i< linnum ;i++)					
+	{
+		int lindatasize;
+		LinFile.Read(&linNdx,sizeof(LIN_NDX_STRU));			//读第i条线的索引
+		ndxOff+=sizeof(LIN_NDX_STRU);
+		linDatSize=linNdx.dotNum*sizeof(PNT_STRU);				//计算当前线的坐标点所需内存字节数
+		linDatBuf=new char [linDatSize];					//申请存放当前线坐标数据所需内存
+		lindatasize=linDatSize;
+		LinFile.Seek(linNdx.datOff,CFile::begin);			//定位到当前线坐标数据起始位置
+		LinFile.Read(linDatBuf,lindatasize);					//读当前线的坐标数据
+		GLinTmpFile2.Write(linDatBuf,lindatasize);			//将线坐标数据存入临时文件2
+		linNdx.datOff=tmpDatOff;
+		tmpDatOff+=linDatSize;
+		GLinTmpFile1.Write(&linNdx,sizeof(LIN_NDX_STRU)); //将新索引结构存于临时文件1
+		LinFile.Seek(ndxOff,CFile::begin);					//重新定位到索引结构处
+		delete []linDatBuf;
+	}
+
 	return (1);
 }
+
 //将线临时文件转化成永久文件的函数
 long Lin_TCF(CString FilePathName,int version)
 {
+	
 	int i;
-	lin_ndx_stru linNdx;
 	int linDatSize;
 	char *linDatBuf;
 	int dataOff=sizeof(LIN_VERSION)+sizeof(GLinNum)+sizeof(GLinLNum)+GLinNum*sizeof(LIN_NDX_STRU);
@@ -292,22 +307,35 @@ long Lin_TCF(CString FilePathName,int version)
 	GLinFile.Write(&version,sizeof(int));
 	GLinFile.Write(&GLinNum,sizeof(int));
 	GLinFile.Write(&GLinLNum,sizeof(int));
-	for(i=0;i<GLinNum;i++)
+
+	for(i=0 ;i < GLinNum; i++)
 	{
+		int lindata=0;
+		lin_ndx_stru linNdx;
+		lin_ndx_stru tempNdx;
+
 		GLinTmpFile1.Read(&linNdx,sizeof(LIN_NDX_STRU));	
-		linDatSize=linNdx.dotNum*sizeof(POINT);				//计算当前线的坐标点所需内存字节数
+		tempNdx=linNdx;
+
+		linDatSize=linNdx.dotNum*sizeof(PNT_STRU);				//计算当前线的坐标点所需内存字节数
 		linDatBuf=new char [linDatSize];					//申请存放当前线坐标数据所需内存
 		GLinTmpFile2.Seek(linNdx.datOff,CFile::begin);		//定位到索引的坐标数据
-		GLinTmpFile2.Read(&linDatBuf,linDatSize);
+		lindata=linDatSize;
+		GLinTmpFile2.Read(&linDatBuf,sizeof(lindata));
 		GLinFile.Seek(dataOff,CFile::begin);
-		GLinFile.Write(&linDatBuf,linDatSize);
-		dataOff+=linDatSize;
-		linNdx.datOff=dataOff;
+		//lindata=linDatSize;
+		GLinFile.Write(&linDatBuf,sizeof(lindata));
+		tempNdx.datOff=dataOff;
 		GLinFile.Seek(ndxOff,CFile::begin);
-		GLinFile.Write(&linNdx,sizeof(LIN_NDX_STRU));
+		GLinFile.Write(&tempNdx,sizeof(LIN_NDX_STRU));
 		ndxOff+=sizeof(LIN_NDX_STRU);
-	}
 
+		dataOff+=lindata;
+		delete []linDatBuf;
+
+
+	}
+	
 	GLinFile.Close();
 	GLinChanged=0;	
 	return (1);
@@ -329,21 +357,21 @@ long Reg_FCT(CFile &RegFile,CString FilePathName)
 	GRegTmpFile2.Seek(tmpDatOff,CFile::begin);		//将区临时文件2指针定义到tepdatoff
 	RegFile.Seek(ndxOff,CFile::begin);		//将区永久文件指针跳过版本及逻辑数物理数
 	for(i=0;i<GRegNum;i++)					
-		{
-			RegFile.Read(&regNdx,sizeof(LIN_NDX_STRU));			//读第i个区的索引
-			ndxOff+=sizeof(LIN_NDX_STRU);
-			regDatSize=regNdx.dotNum*sizeof(POINT);				//计算当前区的坐标点所需内存字节数
-			regDatBuf=new char [regDatSize];					//申请存放当前区坐标数据所需内存
-			RegFile.Seek(regNdx.datOff,CFile::begin);			//定位到当前区坐标数据起始位置
-			RegFile.Read(regDatBuf,regDatSize);					//读当前区的坐标数据
-			GLinTmpFile2.Write(regDatBuf,regDatSize);			//将区坐标数据存入临时文件2
-			regNdx.datOff=tmpDatOff;
-			tmpDatOff += regDatSize;	
-			GLinTmpFile1.Write(&regNdx,sizeof(LIN_NDX_STRU)); //将新索引结构存于临时文件1
-			RegFile.Seek(ndxOff,CFile::begin);					//重新定位到索引结构处
+	{
+		RegFile.Read(&regNdx,sizeof(LIN_NDX_STRU));			//读第i个区的索引
+		ndxOff+=sizeof(LIN_NDX_STRU);
+		regDatSize=regNdx.dotNum*sizeof(POINT);				//计算当前区的坐标点所需内存字节数
+		regDatBuf=new char [regDatSize];					//申请存放当前区坐标数据所需内存
+		RegFile.Seek(regNdx.datOff,CFile::begin);			//定位到当前区坐标数据起始位置
+		RegFile.Read(regDatBuf,regDatSize);					//读当前区的坐标数据
+		GLinTmpFile2.Write(regDatBuf,regDatSize);			//将区坐标数据存入临时文件2
+		regNdx.datOff=tmpDatOff;
+		tmpDatOff += regDatSize;	
+		GLinTmpFile1.Write(&regNdx,sizeof(LIN_NDX_STRU)); //将新索引结构存于临时文件1
+		RegFile.Seek(ndxOff,CFile::begin);					//重新定位到索引结构处
 
-		}
-	
+	}
+
 	return (1);
 }
 //将区临时文件转化成永久性文件的函数
@@ -393,7 +421,8 @@ long Reg_TCF(CString FilePathName,int version)
 
 
 
- long GetOpenPath(CString &pathname)
+
+long GetOpenPath(CString &pathname)
 {
 	CFileDialog mFileDlg(TRUE,NULL,NULL,OFN_HIDEREADONLY|OFN_OVERWRITEPROMPT|OFN_ALLOWMULTISELECT,_T("点线区文件 |*.pnt;*.lin;*.regn||"),AfxGetMainWnd());
 	if(mFileDlg.DoModal()!=IDOK)
@@ -416,7 +445,7 @@ long GetPntSavePath(CString &pathname)
 	{
 		goto GET_SAVE_PATH_END;	
 	}
-//	mFileDlg.UpdateData(TRUE);
+	//	mFileDlg.UpdateData(TRUE);
 	pathname=mFileDlg.GetPathName();	
 	return 1; 
 
@@ -431,7 +460,7 @@ long GetLinSavePath(CString &pathname)
 	{
 		goto GET_SAVE_PATH_END;	
 	}
-//	mFileDlg.UpdateData(TRUE);
+	//	mFileDlg.UpdateData(TRUE);
 	pathname=mFileDlg.GetPathName();
 	return 1; 	
 
@@ -446,7 +475,7 @@ long GetRegSavePath(CString &pathname)
 	{
 		goto GET_SAVE_PATH_END;	
 	}
-//	mFileDlg.UpdateData(TRUE);
+	//	mFileDlg.UpdateData(TRUE);
 	pathname=mFileDlg.GetPathName();
 	return 1;	
 
@@ -519,7 +548,7 @@ long GetPntExitPath(CString &pathname)
 		pathname=mFileDlg.GetPathName();	
 		return 1; 
 	}
-	GET_SAVE_PATH_END:
+GET_SAVE_PATH_END:
 	return 0;
 }
 long GetLinExitPath(CString &pathname)
@@ -543,7 +572,7 @@ long GetLinExitPath(CString &pathname)
 		pathname=mFileDlg.GetPathName();	
 		return 1; 
 	}
-	GET_SAVE_PATH_END:
+GET_SAVE_PATH_END:
 	return 0;
 }
 long GetRegExitPath(CString &pathname)
@@ -567,7 +596,7 @@ long GetRegExitPath(CString &pathname)
 		pathname=mFileDlg.GetPathName();	
 		return 1; 
 	}
-	GET_SAVE_PATH_END:
+GET_SAVE_PATH_END:
 	return 0;
 }
 
@@ -606,7 +635,7 @@ long GetAReg(int ri,reg_ndx_stru &regNdx,POINT *ptRegDatBuf, long bufLen)
 	GRegTmpFile2.Seek(regNdx.datOff,CFile::begin);
 	GRegTmpFile2.Read(ptRegDatBuf,pntSize);
 	return (1);
-	
+
 
 
 }
@@ -659,7 +688,7 @@ long IsInReg(POINT *regPnt,int regPntNum,POINT xy)
 			xmax = regPnt[i+1].x;
 			xmin = regPnt[i].x;
 		}
-													//结束算最大最小值
+		//结束算最大最小值
 		if(regPnt[i+1].y==regPnt[i].y)				//如果该线平行于y方向
 		{
 			if(xy.y==regPnt[i].y&&xy.x>=xmin&&xy.x<=xmax)		//如果该点在该线上则交点加1
@@ -669,7 +698,7 @@ long IsInReg(POINT *regPnt,int regPntNum,POINT xy)
 		{
 			k=double((regPnt[i+1].x-regPnt[i].x))/double((regPnt[i+1].y-regPnt[i].y));	//计算出该直线斜率式方程的斜率k
 			b=double((regPnt[i+1].y*regPnt[i].x-regPnt[i+1].x*regPnt[i].y))/double((regPnt[i+1].y-regPnt[i].y));	//计算出该直线斜率式方程的斜率b
-			
+
 			yy=(xy.x-b)/k;		//计算出该点x下的y值
 			if(yy>=xy.y&&yy<=ymax&&yy>=ymin)	//如果y在最大最小y值中，则交点加1
 			{
@@ -680,42 +709,42 @@ long IsInReg(POINT *regPnt,int regPntNum,POINT xy)
 	}
 	//计算最后一个点与第一个点形成的直线
 	if(regPnt[regPntNum-1].y>regPnt[0].y)
-		{
-			ymax = regPnt[regPntNum-1].y;
-			ymin = regPnt[0].y;
+	{
+		ymax = regPnt[regPntNum-1].y;
+		ymin = regPnt[0].y;
+	}
+	else
+	{
+		ymax = regPnt[0].y;
+		ymin = regPnt[regPntNum-1].y;
+	}
+	if(regPnt[regPntNum-1].x>regPnt[0].x)
+	{
+		xmax = regPnt[regPntNum-1].x;
+		xmin = regPnt[0].x;
+	}
+	else
+	{
+		xmax = regPnt[0].x;
+		xmin = regPnt[regPntNum-1].x;
+	}
+	if(regPnt[regPntNum-1].y==regPnt[0].y)
+	{
+		if(xy.y==regPnt[0].y&&xy.x>=xmin&&xy.x<=xmax)
+			sum++;
+	}
+	else if(regPnt[regPntNum-1].x!=regPnt[0].x)
+	{
+		k=double((regPnt[regPntNum-1].x-regPnt[0].x))/double((regPnt[regPntNum-1].y-regPnt[0].y));
+		b=double((regPnt[regPntNum-1].y*regPnt[0].x-regPnt[regPntNum-1].x*regPnt[0].y))/double((regPnt[regPntNum-1].y-regPnt[0].y));
+
+		yy=(xy.x-b)/k;
+		if(yy>=xy.y&&yy<=ymax&&yy>=ymin)
+		{		
+			sum++;
 		}
-		else
-		{
-			ymax = regPnt[0].y;
-			ymin = regPnt[regPntNum-1].y;
-		}
-		if(regPnt[regPntNum-1].x>regPnt[0].x)
-		{
-			xmax = regPnt[regPntNum-1].x;
-			xmin = regPnt[0].x;
-		}
-		else
-		{
-			xmax = regPnt[0].x;
-			xmin = regPnt[regPntNum-1].x;
-		}
-		if(regPnt[regPntNum-1].y==regPnt[0].y)
-		{
-			if(xy.y==regPnt[0].y&&xy.x>=xmin&&xy.x<=xmax)
-				sum++;
-		}
-		else if(regPnt[regPntNum-1].x!=regPnt[0].x)
-		{
-			k=double((regPnt[regPntNum-1].x-regPnt[0].x))/double((regPnt[regPntNum-1].y-regPnt[0].y));
-			b=double((regPnt[regPntNum-1].y*regPnt[0].x-regPnt[regPntNum-1].x*regPnt[0].y))/double((regPnt[regPntNum-1].y-regPnt[0].y));
-			
-			yy=(xy.x-b)/k;
-			if(yy>=xy.y&&yy<=ymax&&yy>=ymin)
-			{		
-				sum++;
-			}
-		}
-		
+	}
+
 
 	if(sum%2==1)
 	{
@@ -815,20 +844,20 @@ long GetMBR(CRect &rect)
 	{
 		GPntTmpFile.Seek(0,CFile::begin);
 		for(i=0;i<GPntNum;i++)   //遍历所有的点
+		{
+			GPntTmpFile.Read(&PNT_STRU, sizeof( PNT_STRU ));
+			if(PNT_STRU.isDel==0)            
 			{
-				GPntTmpFile.Read(&PNT_STRU, sizeof( PNT_STRU ));
-				if(PNT_STRU.isDel==0)            
-				{
-					if(PNT_STRU.x<minx)					
-						minx=PNT_STRU.x;					
-					if(PNT_STRU.x>maxx)				
-						maxx=PNT_STRU.x;					
-					if(PNT_STRU.y<miny)					
-						miny=PNT_STRU.y;					
-					if(PNT_STRU.y>maxy)					
-						maxy=PNT_STRU.y;
-				}
+				if(PNT_STRU.x<minx)					
+					minx=PNT_STRU.x;					
+				if(PNT_STRU.x>maxx)				
+					maxx=PNT_STRU.x;					
+				if(PNT_STRU.y<miny)					
+					miny=PNT_STRU.y;					
+				if(PNT_STRU.y>maxy)					
+					maxy=PNT_STRU.y;
 			}
+		}
 	}
 	if(GLinTmpFOpened==1&&GLinNum!=0)
 	{
